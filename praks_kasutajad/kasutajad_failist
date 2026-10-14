@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+    echo "Kasutamine: $0 <failinimi>"
+    exit 1
+fi
+
+fail="$1"
+
+if [ ! -f "$fail" ]; then
+    echo "Viga: Faili $fail ei leitud!"
+    exit 1
+fi
+
+while IFS= read -r rida || [ -n "$rida" ]; do
+    if [ -n "$rida" ]; then
+        ./lisa_kasutaja "$rida"
+    fi
+done < "$fail"
