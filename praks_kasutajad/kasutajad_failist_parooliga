@@ -1,0 +1,24 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+    echo "Kasutamine: $0 <failinimi>"
+    exit 1
+fi
+
+fail="$1"
+
+if [ ! -f "$fail" ]; then
+    echo "Viga: Faili $fail ei leitud!"
+    exit 1
+fi
+
+while IFS= read -r rida || [ -n "$rida" ]; do
+    if [ -n "$rida" ]; then
+        kasutaja=$(echo "$rida" | cut -d':' -f1)
+        parool=$(echo "$rida" | cut -d':' -f2)
+
+        useradd -m -s /bin/bash "$kasutaja" 2>/dev/null
+        echo "$kasutaja:$parool" | chpasswd
+        echo "Kasutaja $kasutaja lisatud koos parooliga."
+    fi
+done < "$fail"
