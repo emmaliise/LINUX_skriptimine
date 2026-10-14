@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]; then
+    echo "Kasutamine: $0 <kasutajate_fail> <paroolide_fail>"
+    exit 1
+fi
+
+k_fail="$1"
+p_fail="$2"
+
+if [ ! -f "$k_fail" ] || [ ! -f "$p_fail" ]; then
+    echo "Viga: Ühte või mõlemat faili ei leitud!"
+    exit 1
+fi
+
+paste -d':' "$k_fail" "$p_fail" | while IFS=':' read -r kasutaja parool; do
+    if [ -n "$kasutaja" ] && [ -n "$parool" ]; then
+        useradd -m -s /bin/bash "$kasutaja" 2>/dev/null
+        echo "$kasutaja:$parool" | chpasswd
+        echo "Kasutaja $kasutaja loodud eraldi failide põhjal."
+    fi
+done
