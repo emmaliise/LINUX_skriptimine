@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+    echo "Kasutamine: $0 <kasutajanimi>"
+    exit 1
+fi
+
+kasutaja="$1"
+
+# Loome kasutaja koos kodukataloogiga (-m) ja määrame shelli (-s)
+useradd -m -s /bin/bash "$kasutaja"
+
+echo "Kasutaja $kasutaja on edukalt loodud."
