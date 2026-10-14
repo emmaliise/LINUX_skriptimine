@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Kontrollime, et tegemist on otsese root kasutajaga (mitte sudo)
+if [ "$USER" != "root" ] || [ -n "$SUDO_USER" ]; then
+    echo "Viga: Seda skripti tohib käivitada AINULT otsene root kasutaja!"
+    echo "Sudo kaudu käivitamine on keelatud."
+    exit 1
+fi
+
+#!/bin/bash
+
 if [ $# -ne 1 ]; then
     echo "Kasutamine: $0 <kasutajate_fail>"
     exit 1
