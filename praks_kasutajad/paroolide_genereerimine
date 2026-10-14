@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+    echo "Kasutamine: $0 <kasutajate_fail>"
+    exit 1
+fi
+
+# Kontrollime, kas pwgen on olemas
+if ! command -v pwgen &> /dev/null; then
+    echo "pwgen puudub. Paigaldan..."
+    apt-get update && apt-get install -y pwgen
+fi
+
+fail="$1"
+logifail="loodud_kasutajad_paroolidega"
+> "$logifail"
+
+while IFS= read -r kasutaja || [ -n "$kasutaja" ]; do
+    if [ -n "$kasutaja" ]; then
+        parool=$(pwgen -A 8 1)
+        useradd -m -s /bin/bash "$kasutaja" 2>/dev/null
+        echo "$kasutaja:$parool" | chpasswd
+        echo "$kasutaja:$parool" >> "$logifail"
+        echo "Kasutaja $kasutaja loodud parooliga $parool"
+    fi
+done < "$fail"
